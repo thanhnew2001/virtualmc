@@ -33,7 +33,10 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
-    if 'image' not in request.files or 'audio' not in request.files:
+    if 'image' not in request.files or 'video' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    if 'audio' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
     # Handle image + audio or video + audio uploads based on selection
