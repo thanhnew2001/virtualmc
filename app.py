@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for
 import replicate
 
 app = Flask(__name__)
@@ -75,8 +75,9 @@ def upload_files():
             download_success = download_file(video_url, local_video_path)
 
             if download_success:
-                # Return the local video URL to the client
-                return jsonify({'video_url': '/static/uploads/generated_video.mp4'})
+                # Generate a public URL for the saved video
+                public_video_url = url_for('static', filename='uploads/generated_video.mp4', _external=True)
+                return jsonify({'video_url': public_video_url})
 
             else:
                 return jsonify({'error': 'Failed to download the video'}), 500
@@ -115,8 +116,9 @@ def upload_files():
             download_success = download_file(video_url, local_video_path)
 
             if download_success:
-                # Return the local video URL to the client
-                return jsonify({'video_url': '/static/uploads/generated_video.mp4'})
+                # Generate a public URL for the saved video
+                public_video_url = url_for('static', filename='uploads/generated_video.mp4', _external=True)
+                return jsonify({'video_url': public_video_url})
 
             else:
                 return jsonify({'error': 'Failed to download the video'}), 500
