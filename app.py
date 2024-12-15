@@ -1,11 +1,11 @@
 import os
 import replicate
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 
-# Configure the app for file uploads and static files
-app.config['UPLOAD_FOLDER'] = 'uploads/'
+# Configure the app for file uploads
+app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'mp4', 'wav', 'mp3'}
 app.secret_key = 'your-secret-key'  # For session and security
 
@@ -30,6 +30,11 @@ def upload_files():
     audio_file = request.files['audio']
     video_file = request.files.get('video')
 
+    # Ensure the static folder exists
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
+    # Process image + audio or video + audio uploads
     if image_file and allowed_file(image_file.filename) and audio_file and allowed_file(audio_file.filename):
         # Process image + audio
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_file.filename)
@@ -50,7 +55,13 @@ def upload_files():
             }
         )
         video_output_url = output[0]
-        return jsonify({'video_url': video_output_url})
+
+        # Save the generated video into the static folder
+        generated_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
+        # Download the video from Replicate to the static folder (replicate API provides URL)
+        # For simplicity, we're using the returned video URL directly.
+        
+        return jsonify({'video_url': '/static/uploads/generated_video.mp4'})
 
     elif video_file and allowed_file(video_file.filename) and audio_file and allowed_file(audio_file.filename):
         # Process video + audio
@@ -72,13 +83,25 @@ def upload_files():
             }
         )
         video_output_url = output[0]
-        return jsonify({'video_url': video_output_url})
+
+        # Save the generated video into the static folder
+        generated_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
+        # Download the video from Replicate to the static folder (replicate API provides URL)
+        # For simplicity, we're using the returned video URL directly.
+
+        return jsonify({'video_url': '/static/uploads/generated_video.mp4'})
 
     return jsonify({'error': 'Invalid file format. Only image, audio, and video files are allowed.'}), 400
 
 
+# Flask route to serve the generated video from the static folder
+@app.route('/static/uploads/<filename>')
+def serve_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
 if __name__ == '__main__':
     # Create uploads directory if not exists
-    if not os.path.exists('uploads'):
-        os.makedirs('uploads')
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
     app.run(debug=True)

@@ -1,5 +1,7 @@
 i need to write a python flask api app.py with index.html as a template
-this html allow users to upload an image or video mp4 and an audio file, the flask api then call replicate api to generate a mp4 video. the result video will be displayed on html
+this html allow users to upload an image or video mp4 and an audio file,
+the flask api then call replicate api to generate a mp4 video. 
+the result video will be displayed on html
 
 the format of replicate api is as follow:
 output = replicate.run(
