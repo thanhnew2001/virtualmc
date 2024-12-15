@@ -37,7 +37,10 @@ def upload_files():
     image_file = request.files.get('image')
     audio_file = request.files['audio']
     video_file = request.files['video']
+    print(audio_file.filename)
     file_type = request.form.get("file_type")
+
+
 
     # Ensure the static folder exists
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -45,6 +48,12 @@ def upload_files():
 
     # Process image + audio
     if file_type=='image':
+        # Save the image and audio files
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_file.filename)
+        audio_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file.filename)
+        image_file.save(image_path)
+        audio_file.save(audio_path)
+
         # Generate full URLs for the image and audio
         image_url = url_for('serve_file', filename=image_file.filename, _external=True)
         audio_url = url_for('serve_file', filename=audio_file.filename, _external=True)
@@ -86,23 +95,30 @@ def upload_files():
             return jsonify({'error': str(e)}), 500
 
     if file_type=='video':
+        print("TEsting video")
+        # Process video + audio
+        video_path = os.path.join(app.config['UPLOAD_FOLDER'], video_file.filename)
+        print(video_path)
+        audio_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file.filename)
+        video_file.save(video_path)
+        audio_file.save(audio_path)
+
+        # Generate full URL for the video and audio
+        video_url = url_for('serve_file', filename=video_file.filename, _external=True)
+        audio_url = url_for('serve_file', filename=audio_file.filename, _external=True)
+        print(video_url)
+
+        input_data = {
+            "face": video_url,  # Full URL for the face (video)
+            "audio": audio_url,  # Full URL for the audio
+            "fps": 25,
+            "pads": "0 10 0 0",  # Padding for the detected face bounding box
+            "smooth": True,  # Smooth face detections
+            "resize_factor": 1  # No resizing
+        }
+        print(input_data)
+
         try:
-            # Generate full URL for the video and audio
-            video_url = url_for('serve_file', filename=video_file.filename, _external=True)
-            audio_url = url_for('serve_file', filename=audio_file.filename, _external=True)
-            print(video_url)
-
-            input_data = {
-                "face": video_url,  # Full URL for the face (video)
-                "audio": audio_url,  # Full URL for the audio
-                "fps": 25,
-                "pads": "0 10 0 0",  # Padding for the detected face bounding box
-                "smooth": True,  # Smooth face detections
-                "resize_factor": 1  # No resizing
-            }
-            print(input_data)
-
-     
             # Call Replicate API to generate the video (using image and audio)
             output = replicate.run(
                 "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
