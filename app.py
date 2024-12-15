@@ -59,7 +59,7 @@ def upload_files():
             "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
             input=input_data
         )
-        video_output_url = output[0]
+        print(output)
 
         # Save the generated video into the static folder
         generated_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
@@ -95,7 +95,7 @@ def upload_files():
             "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
             input=input_data
         )
-        video_output_url = output[0]
+        print(output)
 
         # Save the generated video into the static folder
         generated_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
