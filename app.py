@@ -1,6 +1,7 @@
 import os
 import replicate
 from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
+import requests
 
 app = Flask(__name__)
 
