@@ -57,12 +57,12 @@
                 if (xhr.status == 200) {
                     // Parse the JSON response
                     var response = JSON.parse(xhr.responseText);
-                    if (response) {
+                    if (response.video_url) {
                         // Display the generated video dynamically
                         document.getElementById('generated-video').innerHTML = `
                             <h2>Generated Video:</h2>
                             <video controls width="500">
-                                <source src="${response}" type="video/mp4">
+                                <source src="${response.video_url}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         `;
