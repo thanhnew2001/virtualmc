@@ -1,3 +1,4 @@
 replicate
 flask
 flask-cors
+requests
