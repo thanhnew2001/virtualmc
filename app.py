@@ -33,7 +33,7 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
-    if 'image' not in request.files or 'video' not in request.files:
+    if not ('image' in request.files or 'video' in request.files):
         return jsonify({'error': 'No file part'}), 400
     
     if 'audio' not in request.files:
@@ -43,7 +43,7 @@ def upload_files():
     image_file = request.files.get('image')
     audio_file = request.files['audio']
     video_file = request.files.get('video')
-    
+
 
     # Ensure the static folder exists
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
