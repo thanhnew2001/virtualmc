@@ -23,18 +23,18 @@
                 document.getElementById('image-controls').style.display = 'block';
                 document.getElementById('video-controls').style.display = 'none';
                 
-            //     // Make sure the video inputs are not required
-            //     document.querySelector('input[name="video"]').removeAttribute('required');
-            //     document.querySelector('input[name="audio"]').setAttribute('required', 'true');
-            //     document.querySelector('input[name="image"]').setAttribute('required', 'true');
+                // Make sure the video inputs are not required
+                document.querySelector('input[name="video"]').removeAttribute('required');
+                document.querySelector('input[name="audio"]').setAttribute('required', 'true');
+                document.querySelector('input[name="image"]').setAttribute('required', 'true');
             } else {
                 document.getElementById('image-controls').style.display = 'none';
                 document.getElementById('video-controls').style.display = 'block';
                 
-                // // Make sure the video inputs are required when video is selected
-                // document.querySelector('input[name="audio"]').setAttribute('required', 'true');
-                // document.querySelector('input[name="image"]').removeAttribute('required');
-                // document.querySelector('input[name="video"]').setAttribute('required', 'true');
+                // Make sure the video inputs are required when video is selected
+                document.querySelector('input[name="audio"]').setAttribute('required', 'true');
+                document.querySelector('input[name="image"]').removeAttribute('required');
+                document.querySelector('input[name="video"]').setAttribute('required', 'true');
             }
         }
 

@@ -43,6 +43,7 @@ def upload_files():
     image_file = request.files.get('image')
     audio_file = request.files['audio']
     video_file = request.files.get('video')
+    
 
     # Ensure the static folder exists
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
