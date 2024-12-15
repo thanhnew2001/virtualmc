@@ -61,9 +61,6 @@ def upload_files():
         )
         print(output)
 
-        # Save the generated video into the static folder
-        generated_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
-        # For simplicity, we're using the returned video URL directly.
 
         generated_video_url = url_for('serve_file', filename='generated_video.mp4', _external=True)
 
@@ -96,11 +93,7 @@ def upload_files():
             input=input_data
         )
         print(output)
-
-        # Save the generated video into the static folder
-        generated_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
-        # For simplicity, we're using the returned video URL directly.
-
+        
         generated_video_url = url_for('serve_file', filename='generated_video.mp4', _external=True)
 
         return jsonify({'video_url': generated_video_url})
