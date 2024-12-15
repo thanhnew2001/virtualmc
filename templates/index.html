@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Generator</title>
+    <script>
+        // Toggle form controls based on file type (image or video)
+        function toggleControls() {
+            var selection = document.querySelector('input[name="file_type"]:checked').value;
+            
+            if (selection == 'image') {
+                document.getElementById('image-controls').style.display = 'block';
+                document.getElementById('video-controls').style.display = 'none';
+                
+                // Make sure the video inputs are not required
+                document.querySelector('input[name="video"]').removeAttribute('required');
+                document.querySelector('input[name="audio"]').setAttribute('required', 'true');
+                document.querySelector('input[name="image"]').setAttribute('required', 'true');
+            } else {
+                document.getElementById('image-controls').style.display = 'none';
+                document.getElementById('video-controls').style.display = 'block';
+                
+                // Make sure the video inputs are required when video is selected
+                document.querySelector('input[name="audio"]').setAttribute('required', 'true');
+                document.querySelector('input[name="image"]').removeAttribute('required');
+                document.querySelector('input[name="video"]').setAttribute('required', 'true');
+            }
+        }
+
+        // AJAX form submission
+        function submitForm(event) {
+            event.preventDefault();  // Prevent the form from submitting the default way
+
+            var formData = new FormData(document.querySelector('form'));
+
+            // Create an AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+
+            // Set up a handler for when the request completes
+            xhr.onload = function() {
+                if (xhr.status == 200) {
+                    // Parse the JSON response
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.video_url) {
+                        // Display the generated video dynamically
+                        document.getElementById('generated-video').innerHTML = `
+                            <h2>Generated Video:</h2>
+                            <video controls width="500">
+                                <source src="${response.video_url}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        `;
+                    }
+                } else {
+                    console.error('Error:', xhr.status, xhr.responseText);
+                }
+            };
+
+            // Send the form data via AJAX
+            xhr.send(formData);
+        }
+    </script>
+</head>
+<body>
+    <h1>Upload Image or Video to Generate Video</h1>
+
+    <form onsubmit="submitForm(event)" enctype="multipart/form-data">
+        <!-- Choose the file type: image or video -->
+        <label>Select File Type:</label><br>
+        <input type="radio" name="file_type" value="image" onclick="toggleControls()" checked> Image (with face)
+        <input type="radio" name="file_type" value="video" onclick="toggleControls()"> Video<br><br>
+
+        <!-- Image file controls -->
+        <div id="image-controls">
+            <label for="image">Image (with face):</label>
+            <input type="file" name="image" accept="image/*" ><br><br>
+
+            <label for="audio">Audio File:</label>
+            <input type="file" name="audio" accept="audio/*" ><br><br>
+        </div>
+
+        <!-- Video file controls -->
+        <div id="video-controls" style="display: none;">
+            <label for="video">Video File (MP4):</label>
+            <input type="file" name="video" accept="video/mp4" ><br><br>
+
+            <label for="audio">Audio File:</label>
+            <input type="file" name="audio" accept="audio/*" ><br><br>
+        </div>
+
+        <input type="submit" value="Generate Video">
+    </form>
+
+    <!-- Video Display -->
+    <div id="generated-video"></div>
+</body>
+</html>
