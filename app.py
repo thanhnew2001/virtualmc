@@ -55,15 +55,20 @@ def upload_files():
         print(input_data)
 
         try:
-            # Call Replicate API to generate the video (using video and audio)
+            # Call Replicate API to generate the video (using image and audio)
             output = replicate.run(
                 "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
                 input=input_data
             )
-            print("Replicate API Output:", output)  # This will print the URL
 
-            # Since the output is directly a URL, we can return it as the video URL in the response
-            return jsonify({'video_url': output})  # Return the URL directly
+            # Check if output is a list and get the first item (URL)
+            if isinstance(output, list) and len(output) > 0:
+                video_url = output[0]  # Extract URL from the output list
+            else:
+                return jsonify({'error': 'Unexpected output format from Replicate API'}), 500
+
+            # Return the video URL as JSON response
+            return jsonify({'video_url': video_url})
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500
@@ -90,15 +95,20 @@ def upload_files():
         print(input_data)
 
         try:
-            # Call Replicate API to generate the video (using video and audio)
+            # Call Replicate API to generate the video (using image and audio)
             output = replicate.run(
                 "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
                 input=input_data
             )
-            print("Replicate API Output:", output)  # This will print the URL
 
-            # Since the output is directly a URL, we can return it as the video URL in the response
-            return jsonify({'video_url': output})  # Return the URL directly
+            # Check if output is a list and get the first item (URL)
+            if isinstance(output, list) and len(output) > 0:
+                video_url = output[0]  # Extract URL from the output list
+            else:
+                return jsonify({'error': 'Unexpected output format from Replicate API'}), 500
+
+            # Return the video URL as JSON response
+            return jsonify({'video_url': video_url})
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500
