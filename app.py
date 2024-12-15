@@ -64,7 +64,7 @@ def upload_files():
 
         generated_video_url = url_for('serve_file', filename='generated_video.mp4', _external=True)
 
-        return jsonify({'video_url': generated_video_url})
+        return jsonify({'video_url': output.video_url})
 
     elif video_file and allowed_file(video_file.filename) and audio_file and allowed_file(audio_file.filename):
         # Process video + audio
@@ -93,10 +93,10 @@ def upload_files():
             input=input_data
         )
         print(output)
-        
+
         generated_video_url = url_for('serve_file', filename='generated_video.mp4', _external=True)
 
-        return jsonify({'video_url': generated_video_url})
+        return jsonify({'video_url': output.video_url})
 
     return jsonify({'error': 'Invalid file format. Only image, audio, and video files are allowed.'}), 400
 
