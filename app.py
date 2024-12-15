@@ -10,7 +10,7 @@ app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'mp4', 'wav', 'mp3'}
 app.secret_key = 'your-secret-key'  # For session and security
 
 # Replicate API setup
-replicate_client = replicate.Client(api_token="your-replicate-api-token")
+# replicate_client = replicate.Client(api_token="your-replicate-api-token")
 
 # Helper function to check allowed file extensions
 def allowed_file(filename):
@@ -43,7 +43,7 @@ def upload_files():
         audio_file.save(audio_path)
 
         # Call Replicate API to generate the video (using image)
-        output = replicate_client.run(
+        output = replicate.run(
             "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
             input={
                 "face": image_path,  # Image with face for lip-sync
@@ -71,7 +71,7 @@ def upload_files():
         audio_file.save(audio_path)
 
         # Call Replicate API to generate the video (using video)
-        output = replicate_client.run(
+        output = replicate.run(
             "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
             input={
                 "face": video_path,  # Video with face for lip-sync
