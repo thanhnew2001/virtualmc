@@ -1,6 +1,6 @@
 import os
 import replicate
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
 
 app = Flask(__name__)
 
@@ -19,7 +19,7 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
-    if 'image' not in request.files and 'video' not in request.files:
+    if 'image' not in request.files or 'audio' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
     # Handle image + audio or video + audio uploads based on selection
@@ -31,36 +31,40 @@ def upload_files():
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
-    # Process image + audio or video + audio uploads
+    # Process image + audio
     if image_file and allowed_file(image_file.filename) and audio_file and allowed_file(audio_file.filename):
-        # Process image + audio
+        # Save the image and audio files
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_file.filename)
         audio_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file.filename)
         image_file.save(image_path)
         audio_file.save(audio_path)
 
+        # Generate full URLs for the image and audio
+        image_url = url_for('serve_file', filename=image_file.filename, _external=True)
+        audio_url = url_for('serve_file', filename=audio_file.filename, _external=True)
+
+        # Prepare input data for the Replicate API
         input_data = {
-            "face": image_path,  # Image with face for lip-sync
-            "audio": audio_path,  # Audio file
+            "face": image_url,  # Full URL for the face (image)
+            "audio": audio_url,  # Full URL for the audio
             "fps": 25,
             "pads": "0 10 0 0",  # Padding for the detected face bounding box
             "smooth": True,  # Smooth face detections
             "resize_factor": 1  # No resizing
         }
+        print(input_data)
 
-        try:
-            # Call Replicate API to generate the video (using image and audio)
-            output = replicate.run(
-                "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
-                input=input_data
-            )
-            print("Replicate API Output:", output)  # This will print the URL
+        # Call Replicate API to generate the video (using the image and audio)
+        output = replicate.run(
+            "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
+            input=input_data
+        )
+        print("ouput=",output)
 
-            # Since the output is directly a URL, we can return it as the video URL in the response
-            return jsonify({'video_url': output})  # Return the URL directly
 
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+        generated_video_url = url_for('serve_file', filename='generated_video.mp4', _external=True)
+
+        return jsonify({'video_url': output})
 
     elif video_file and allowed_file(video_file.filename) and audio_file and allowed_file(audio_file.filename):
         # Process video + audio
@@ -69,28 +73,30 @@ def upload_files():
         video_file.save(video_path)
         audio_file.save(audio_path)
 
+        # Generate full URL for the video and audio
+        video_url = url_for('serve_file', filename=video_file.filename, _external=True)
+        audio_url = url_for('serve_file', filename=audio_file.filename, _external=True)
+
         input_data = {
-            "face": video_path,  # Video with face for lip-sync
-            "audio": audio_path,  # Audio file
+            "face": video_url,  # Full URL for the face (video)
+            "audio": audio_url,  # Full URL for the audio
             "fps": 25,
             "pads": "0 10 0 0",  # Padding for the detected face bounding box
             "smooth": True,  # Smooth face detections
             "resize_factor": 1  # No resizing
         }
+        print(input_data)
 
-        try:
-            # Call Replicate API to generate the video (using video and audio)
-            output = replicate.run(
-                "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
-                input=input_data
-            )
-            print("Replicate API Output:", output)  # This will print the URL
+        # Call Replicate API to generate the video (using the video and audio)
+        output = replicate.run(
+            "devxpy/cog-wav2lip:8d65e3f4f4298520e079198b493c25adfc43c058ffec924f2aefc8010ed25eef",
+            input=input_data
+        )
+        print("ouput=",output)
 
-            # Since the output is directly a URL, we can return it as the video URL in the response
-            return jsonify({'video_url': output})  # Return the URL directly
+        generated_video_url = url_for('serve_file', filename='generated_video.mp4', _external=True)
 
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+        return jsonify({'video_url': output})
 
     return jsonify({'error': 'Invalid file format. Only image, audio, and video files are allowed.'}), 400
 
