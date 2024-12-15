@@ -92,6 +92,7 @@ def upload_files():
             return jsonify({'error': str(e)}), 500
 
     elif video_file and allowed_file(video_file.filename) and audio_file and allowed_file(audio_file.filename):
+        print("TEsting video")
         # Process video + audio
         video_path = os.path.join(app.config['UPLOAD_FOLDER'], video_file.filename)
         audio_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file.filename)
