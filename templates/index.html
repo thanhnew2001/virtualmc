@@ -77,6 +77,12 @@
             };
 
             // Send the form data via AJAX
+            console.log(formData)
+            var videoFile = formData.get('video');  // Get the video file from the FormData
+            if (!videoFile) {
+                alert('Please upload a video file.');
+                return;  // Prevent form submission if no video file is selected
+            }
             xhr.send(formData);
         }
     </script>
