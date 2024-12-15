@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Generator</title>
+    <style>
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #loading img {
+            width: 50px;
+        }
+    </style>
     <script>
         // Toggle form controls based on file type (image or video)
         function toggleControls() {
@@ -32,6 +42,10 @@
         function submitForm(event) {
             event.preventDefault();  // Prevent the form from submitting the default way
 
+            // Disable the submit button and show loading spinner
+            document.querySelector('input[type="submit"]').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+
             var formData = new FormData(document.querySelector('form'));
 
             // Create an AJAX request
@@ -56,6 +70,10 @@
                 } else {
                     console.error('Error:', xhr.status, xhr.responseText);
                 }
+
+                // Hide the loading spinner and enable the submit button
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('input[type="submit"]').disabled = false;
             };
 
             // Send the form data via AJAX
@@ -91,6 +109,12 @@
 
         <input type="submit" value="Generate Video">
     </form>
+
+    <!-- Loading Spinner -->
+    <div id="loading">
+        <p>Generating video... Please wait.</p>
+        <img src="https://i.imgur.com/llF5iyg.gif" alt="Loading...">
+    </div>
 
     <!-- Video Display -->
     <div id="generated-video"></div>
