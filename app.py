@@ -63,7 +63,7 @@ def upload_files():
             print("url", output)
        
             # Return the video URL as JSON response
-            return jsonify({'video_url': output.Output})
+            return jsonify({'video_url': output.output})
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500
@@ -98,7 +98,7 @@ def upload_files():
             print("url", output)
    
             # Return the video URL as JSON response
-            return jsonify({'video_url': output.Output})
+            return jsonify({'video_url': output.output})
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500
