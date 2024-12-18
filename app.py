@@ -6,6 +6,11 @@ import uuid
 
 app = Flask(__name__)
 
+ALLOWED_IP = socket.gethostbyname(socket.gethostname())
+print(f"Allowed IP: {ALLOWED_IP}")  # Prints the backend's current IP
+
+
+
 # Configure the app for file uploads
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'mp4', 'wav', 'mp3'}
