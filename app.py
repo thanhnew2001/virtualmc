@@ -40,9 +40,9 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
-    client_ip = request.remote_addr
-    if client_ip != ALLOWED_IP:
-        return jsonify({"error": "Access denied: Unauthorized IP"}), 403
+    # client_ip = request.remote_addr
+    # if client_ip != ALLOWED_IP:
+    #     return jsonify({"error": "Access denied: Unauthorized IP"}), 403
         
     # Handle image + audio or video + audio uploads based on selection
     image_file = request.files.get('image')
@@ -169,4 +169,5 @@ if __name__ == '__main__':
     # Create uploads directory if not exists
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
-    app.run(debug=True)
+    app.run(debug=True, host="127.0.0.1")  # Only accessible from localhost
+)
