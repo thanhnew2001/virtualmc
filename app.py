@@ -34,6 +34,10 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
+    client_ip = request.remote_addr
+    if client_ip != ALLOWED_IP:
+        return jsonify({"error": "Access denied: Unauthorized IP"}), 403
+        
     # Handle image + audio or video + audio uploads based on selection
     image_file = request.files.get('image')
     audio_file = request.files['audio']
