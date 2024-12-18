@@ -2,6 +2,7 @@ import os
 import replicate
 from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
 import requests
+import uuid
 
 app = Flask(__name__)
 
@@ -80,12 +81,13 @@ def upload_files():
             video_url = output  # This should be the URL returned by Replicate API
 
             # Now download the video from the URL and save it locally
-            local_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
+            unique_file_name = f"generated_video_{uuid.uuid4().hex}.mp4"
+            local_video_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_file_name)
             download_success = download_file(video_url, local_video_path)
 
             if download_success:
                 # Generate a public URL for the saved video
-                public_video_url = url_for('static', filename='uploads/generated_video.mp4', _external=True)
+                public_video_url = url_for('static',  filename=f'uploads/{unique_filename}', _external=True)
                 return jsonify({'video_url': public_video_url})
 
             else:
@@ -129,12 +131,13 @@ def upload_files():
             video_url = output  # This should be the URL returned by Replicate API
 
             # Now download the video from the URL and save it locally
-            local_video_path = os.path.join(app.config['UPLOAD_FOLDER'], 'generated_video.mp4')
+            unique_file_name = f"generated_video_{uuid.uuid4().hex}.mp4"
+            local_video_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_file_name)
             download_success = download_file(video_url, local_video_path)
 
             if download_success:
                 # Generate a public URL for the saved video
-                public_video_url = url_for('static', filename='uploads/generated_video.mp4', _external=True)
+                public_video_url = url_for('static',  filename=f'uploads/{unique_filename}', _external=True)
                 return jsonify({'video_url': public_video_url})
 
             else:
