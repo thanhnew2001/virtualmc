@@ -169,4 +169,4 @@ if __name__ == '__main__':
     # Create uploads directory if not exists
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
-    app.run(debug=True, host="127.0.0.1")  # Only accessible from localhost
+    app.run(debug=True)  # Only accessible from localhost
