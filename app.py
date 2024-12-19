@@ -97,7 +97,7 @@ def upload_files():
 
             if download_success:
                 # Generate a public URL for the saved video
-                public_video_url = url_for('static',  filename=f'uploads/{unique_file_name}', _external=True)
+                public_video_url = url_for('static',  filename=f'uploads/{unique_file_name}', _external=True,_scheme='https')
                 return jsonify({'video_url': public_video_url})
 
             else:
@@ -147,7 +147,7 @@ def upload_files():
 
             if download_success:
                 # Generate a public URL for the saved video
-                public_video_url = url_for('static',  filename=f'uploads/{unique_file_name}', _external=True)
+                public_video_url = url_for('static',  filename=f'uploads/{unique_file_name}', _external=True, _scheme='https')
                 return jsonify({'video_url': public_video_url})
 
             else:
